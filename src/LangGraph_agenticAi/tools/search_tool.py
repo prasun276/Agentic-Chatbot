@@ -3,7 +3,8 @@ from langgraph.prebuilt import ToolNode
 
 def get_tools():
     """
-    Return the list of tools to be used in the chatbot
+    Return the list of tools to be used in the chatbot.
+    Note: TAVILY_API_KEY must be set as an environment variable.
     """
     tools=[TavilySearchResults(max_results=2)]
     return tools

@@ -1,5 +1,6 @@
 from tavily import TavilyClient
 from langchain_core.prompts import ChatPromptTemplate
+import os
 
 
 class AINewsNode:
@@ -7,7 +8,11 @@ class AINewsNode:
         """
         Initialize the AINewsNode with API keys for Tavily and GROQ.
         """
-        self.tavily = TavilyClient()
+        # Get Tavily API key from environment variable
+        tavily_api_key = os.environ.get("TAVILY_API_KEY", "")
+        if not tavily_api_key:
+            raise ValueError("TAVILY_API_KEY environment variable is not set. Please configure it in your deployment settings.")
+        self.tavily = TavilyClient(api_key=tavily_api_key)
         self.llm = llm
         # this is used to capture various steps in this file so that later can be use for steps shown
         self.state = {}
@@ -81,6 +86,8 @@ class AINewsNode:
     def save_result(self,state):
         frequency = self.state['frequency']
         summary = self.state['summary']
+        # Create AINews directory if it doesn't exist
+        os.makedirs("./AINews", exist_ok=True)
         filename = f"./AINews/{frequency}_summary.md"
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(f"# {frequency.capitalize()} AI News Summary\n\n")

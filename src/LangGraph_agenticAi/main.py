@@ -45,6 +45,14 @@ def load_langgraph_agenticai_app():
                     st.error("Error: No use case selected.")
                     return
             
+            # Validate Tavily API key for use cases that require it
+            if usecase in ["Chatbot With Web", "AI News"]:
+                import os
+                tavily_key = os.environ.get("TAVILY_API_KEY", "")
+                if not tavily_key:
+                    st.error("❌ TAVILY_API_KEY environment variable is not set. This use case requires Tavily API for web search functionality. Please configure it in your deployment settings.")
+                    return
+            
             ## Graph Builder
 
             graph_builder=GraphBuilder(model)

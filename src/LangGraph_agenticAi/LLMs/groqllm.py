@@ -8,12 +8,15 @@ class GroqLLM:
 
     def get_llm_model(self):
         try:
-            groq_api_key=self.user_controls_input["GROQ_API_KEY"]
-            selected_groq_model = self.user_controls_input["selected_groq_model"]
-            if groq_api_key =='' and os.environ["GROQ_API_KEY"] == '':
-                st.error("Please Enter the Groq API KEY")
+            # Only use environment variable for API key
+            groq_api_key = os.environ.get("GROQ_API_KEY", "")
+            selected_groq_model = self.user_controls_input.get("selected_groq_model")
+            
+            if not groq_api_key:
+                st.error("❌ GROQ_API_KEY environment variable is not set. Please configure it in your deployment settings.")
+                return None
 
-            llm = ChatGroq(api_key=groq_api_key, model = selected_groq_model)
+            llm = ChatGroq(api_key=groq_api_key, model=selected_groq_model)
         
         except Exception as e:
             raise ValueError(f"Error Occured With Exception: {e}")
